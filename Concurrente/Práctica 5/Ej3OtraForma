@@ -1,0 +1,78 @@
+programa E3
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras((f<10)&(HayFlorEnLaEsquina))
+      tomarFlor
+      f:=f+1
+  fin
+  proceso dejarFlores(E avenida:numero; E calle:numero;E f:numero)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    repetir f
+      depositarFlor
+    Pos(avenida,calle)
+    LiberarEsquina(10,10)
+  fin
+  proceso cosecharFlores(E avenida:numero; E calle:numero;ES f:numero )
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+    Pos(avenida,calle)
+    LiberarEsquina(10,10)
+  fin
+areas
+  calle3:AreaP(1,3,100,3)
+  calle4:AreaP(1,4,100,4)
+  deposito:AreaC(10,10,10,10)
+  esqC:AreaP(1,5,1,5)
+robots
+  robot recolector
+  variables
+    f,pasos:numero
+  comenzar
+    derecha
+    mientras(PosAv<100)
+      f:=0
+      pasos:=0
+      mientras(f<10 & pasos<15)
+        juntarFlores(f)
+        mover
+        pasos:=pasos+1
+      dejarFlores(PosAv,PosCa,f)
+      EnviarMensaje(V,c)
+    EnviarMensaje(F,c)
+  fin
+  robot cosechador
+  variables
+    f,finalizados:numero
+    buscar:boolean
+  comenzar
+    f:=0
+    finalizados:=0
+    mientras(finalizados<2)
+      RecibirMensaje(buscar,*)
+      si(buscar)
+        cosecharFlores(PosAv,PosCa,f)
+      sino
+        finalizados:=finalizados+1
+    Informar(f)
+  fin
+variables
+  r1,r2:recolector
+  c:cosechador
+comenzar
+  AsignarArea(c,esqC)
+  AsignarArea(c,deposito)
+  AsignarArea(r1,calle3)
+  AsignarArea(r1,deposito)
+  AsignarArea(r2,calle4)
+  AsignarArea(r2,deposito)
+  Iniciar(c,1,5)
+  Iniciar(r1,1,3)  
+  Iniciar(r2,1,4)
+fin

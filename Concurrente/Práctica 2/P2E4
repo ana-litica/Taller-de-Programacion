@@ -1,0 +1,141 @@
+programa P2E4
+procesos 
+  proceso juntar(ES e:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      e:=e+1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      e:=e+1
+  fin
+  proceso enviarIDs 
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso avisarGanador(E g:numero)
+  comenzar
+    si(g=1)
+      EnviarMensaje(1,r1)
+      EnviarMensaje(0,r2)
+      EnviarMensaje(0,r3)
+      EnviarMensaje(0,r4)
+    sino
+      si(g=2)
+        EnviarMensaje(1,r2)
+        EnviarMensaje(0,r1)
+        EnviarMensaje(0,r3)
+        EnviarMensaje(0,r4)
+      sino
+        si(g=3)
+          EnviarMensaje(1,r3)
+          EnviarMensaje(0,r1)
+          EnviarMensaje(0,r2)
+          EnviarMensaje(0,r4)
+        sino
+          EnviarMensaje(1,r4)
+          EnviarMensaje(0,r1)
+          EnviarMensaje(0,r2)
+          EnviarMensaje(0,r3)
+  fin
+areas
+  cuadrante:AreaPC(25,25,75,75)
+  areaF:AreaP(1,1,1,1)
+  area1:AreaP(25,1,25,1)
+  area3:AreaP(35,1,35,1)
+  area2:AreaP(30,1,30,1)
+  area4:AreaP(40,1,40,1)
+robots
+  robot recolector
+  variables
+    avI,caI,avenida,id,calle,e:numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    e:=0
+    avI:=PosAv
+    caI:=PosCa
+    RecibirMensaje(avenida,fiscal)
+    mientras(avenida<>0)
+      RecibirMensaje(calle,fiscal)
+      Pos(avenida,calle)
+      juntar(e)
+      Pos(avI,caI)
+      EnviarMensaje(0,fiscal)
+      RecibirMensaje(avenida,fiscal)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(e,fiscal)
+    RecibirMensaje(avenida,fiscal)
+    si(avenida=1)
+      Pos(50,50)
+  fin
+  robot fiscalizador
+  variables
+    max,ganador,id,avenida,calle,aux:numero
+  comenzar
+    enviarIDs
+    max:=-1
+    repetir 10
+      Random(id,1,4)
+      Random(avenida,25,75)
+      Random(calle,25,75)
+      si(id=1)
+        EnviarMensaje(avenida,r1)
+        EnviarMensaje(calle,r1)
+        RecibirMensaje(aux,r1)
+      sino
+        si(id=2)
+          EnviarMensaje(avenida,r2)
+          EnviarMensaje(calle,r2)
+          RecibirMensaje(aux,r2)
+        sino
+          si(id=3)
+            EnviarMensaje(avenida,r3)
+            EnviarMensaje(calle,r3)
+            RecibirMensaje(aux,r3)
+          sino
+            EnviarMensaje(avenida,r4)
+            EnviarMensaje(calle,r4)
+            RecibirMensaje(aux,r4)
+    EnviarMensaje(0,r1)
+    EnviarMensaje(0,r2)
+    EnviarMensaje(0,r3)
+    EnviarMensaje(0,r4)
+    repetir 4
+      RecibirMensaje(id,*)
+      si(id=1)       
+        RecibirMensaje(aux,r1)
+      sino
+        si(id=2)
+          RecibirMensaje(aux,r2)
+        sino
+          si(id=3)
+            RecibirMensaje(aux,r3)
+          sino
+            RecibirMensaje(aux,r4)
+      si(max<aux)
+        max:=aux
+        ganador:=id
+    avisarGanador(ganador)
+  fin
+variables
+  r1,r2,r3,r4:recolector
+  fiscal:fiscalizador
+comenzar
+  AsignarArea(fiscal,areaF)
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r2,cuadrante)
+  AsignarArea(r3,cuadrante)
+  AsignarArea(r4,cuadrante)
+  Iniciar(fiscal,1,1)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+fin

@@ -1,0 +1,68 @@
+programa Ej1c
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso limpiarCalles(ES f:numero)
+  comenzar
+    f:=0
+    repetir 9
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+  fin
+  proceso ganador(ES max:numero)
+  variables
+    f:numero
+  comenzar
+    max:=-1
+    repetir 6
+      RecibirMensaje(f,*)
+      si(max<f)
+        max:=f
+  fin
+areas
+  area1:AreaP(1,1,1,10)
+  area2:AreaP(2,11,2,20)
+  area3:AreaP(3,21,3,30)
+  area4:AreaP(4,31,4,40)
+  area5:AreaP(5,41,5,50)
+  area6:AreaP(6,51,6,60)
+  areaF:AreaP(2,1,2,1)
+robots
+  robot competidor
+  variables
+    f:numero
+  comenzar
+    limpiarCalles(f)
+    EnviarMensaje(f,fiscal)
+  fin
+  robot fiscalizador
+  variables
+    max:numero
+  comenzar
+    ganador(max)
+    Informar(max)
+  fin
+variables
+  r1,r2,r3,r4,r5,r6:competidor
+  fiscal:fiscalizador
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2) 
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(r5,area5)
+  AsignarArea(r6,area6)
+  AsignarArea(fiscal,areaF)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,11)
+  Iniciar(r3,3,21)
+  Iniciar(r4,4,31)
+  Iniciar(r5,5,41)
+  Iniciar(r6,6,51)
+  Iniciar(fiscal,2,1)
+fin

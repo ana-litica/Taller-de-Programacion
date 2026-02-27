@@ -1,0 +1,80 @@
+programa E5
+procesos
+  proceso buscarPapeles(E avenida:numero; E calle:numero; E cant:numero)
+  comenzar
+    repetir cant
+      BloquearEsquina(100,1)
+      Pos(100,1)
+      tomarPapel
+      Pos(avenida,calle)
+      LiberarEsquina(100,1)
+      depositarPapel
+  fin
+  proceso dejarPapeles(E avenida:numero;E calle:numero;E cant:numero)
+  comenzar
+    BloquearEsquina(100,1)
+    Pos(100,1)
+    repetir cant
+      depositarPapel
+    Pos(avenida,calle)
+    LiberarEsquina(100,1)
+  fin
+areas
+  esq1:AreaP(10,1,10,1)
+  esq2:AreaP(11,1,11,1)  
+  esq3:AreaP(12,1,12,1)
+  esqS:AreaP(13,1,13,1)
+  esq100:AreaC(100,1,100,1)
+robots
+  robot cliente
+  variables
+    id,cant:numero
+  comenzar
+    RecibirMensaje(id,s)
+    repetir 4
+      EnviarMensaje(id,s)
+      RecibirMensaje(cant,s)
+      buscarPapeles(PosAv,PosCa,cant)
+    EnviarMensaje(0,s)
+  fin
+  robot servidor
+  variables
+    finalizados,cant,id:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    finalizados:=0
+    mientras(finalizados<3)
+      RecibirMensaje(id,*)
+      si(id=0)
+        finalizados:=finalizados+1
+      sino        
+        Random(cant,1,5)
+        dejarPapeles(13,1,cant)
+        si(id=1)
+          EnviarMensaje(cant,r1)
+        sino
+          si(id=2)
+            EnviarMensaje(cant,r2)
+          sino
+            si(id=3)
+              EnviarMensaje(cant,r3)
+  fin
+variables
+  s:servidor
+  r1,r2,r3:cliente
+comenzar
+  AsignarArea(s,esqS)
+  AsignarArea(s,esq100)
+  AsignarArea(r1,esq1)
+  AsignarArea(r1,esq100)
+  AsignarArea(r2,esq2)
+  AsignarArea(r2,esq100)
+  AsignarArea(r3,esq3)
+  AsignarArea(r3,esq100)
+  Iniciar(s,13,1)
+  Iniciar(r1,10,1)
+  Iniciar(r2,11,1)
+  Iniciar(r3,12,1)
+fin

@@ -1,0 +1,75 @@
+programa Ej3
+procesos
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso limpiarPapeles(ES p:numero)
+  comenzar
+    repetir 9
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+  fin
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso limpiarFlores(ES f:numero)
+  comenzar
+    repetir 9
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+  fin
+areas
+  areaA1:AreaP(1,1,10,1)
+  areaA2:AreaP(11,1,20,1)
+  areaB1:AreaP(1,5,10,5)
+  areaB2:AreaP(11,5,20,5)
+robots
+  robot papelero
+  variables
+    p:numero
+  comenzar
+    derecha
+    si(PosAv=1)
+      p:=0
+      limpiarPapeles(p)
+      EnviarMensaje(p,A2)
+    sino
+      RecibirMensaje(p,A1)
+      limpiarPapeles(p)
+      Informar('Papeles_recolectados',p)
+  fin
+  robot florero
+  variables
+    f:numero
+  comenzar
+    derecha
+    si(PosAv=1)
+      f:=0
+      limpiarFlores(f)
+      EnviarMensaje(f,B2)
+    sino
+      RecibirMensaje(f,B1)
+      limpiarFlores(f)
+      Informar('Flores_recogidas_',f)
+  fin
+variables
+  A1,A2:papelero
+  B1,B2:florero
+comenzar
+  AsignarArea(A1,areaA1)
+  AsignarArea(A2,areaA2)
+  AsignarArea(B1,areaB1)
+  AsignarArea(B2,areaB2)
+  Iniciar(A1,1,1)
+  Iniciar(A2,11,1)
+  Iniciar(B1,1,5)
+  Iniciar(B2,11,5)
+fin

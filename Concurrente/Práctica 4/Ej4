@@ -1,0 +1,94 @@
+programa Ej4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso vaciarBolsa
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso realizarTarea(E t:numero;E a:numero;E c:numero)
+  variables
+    aI,cI:numero
+  comenzar
+    aI:=PosAv
+    cI:=PosCa
+    BloquearEsquina(a,c)
+    Pos(a,c)
+    si(t=1)
+      juntarFlores
+    sino
+      si(t=2)
+        juntarPapeles
+      sino
+        vaciarBolsa
+    Pos(aI,cI)
+    LiberarEsquina(a,c)
+  fin
+areas
+  esqJ:AreaP(1,1,1,1)
+  esq1:AreaP(2,1,2,1)
+  esq2:AreaP(3,1,3,1)
+  cuadrante:AreaPC(2,2,100,100)
+robots
+  robot jefe
+  variables
+    id,tarea,avenida,calle:numero
+    seguir:boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    repetir 10
+      Random(id,1,2)
+      Random(tarea,1,3)
+      Random(avenida,2,100)
+      Random(calle,2,100)
+      si(id=1)
+        EnviarMensaje(tarea,r1)
+        EnviarMensaje(avenida,r1)
+        EnviarMensaje(calle,r1)
+        RecibirMensaje(seguir,r1)
+      sino
+        EnviarMensaje(tarea,r2)
+        EnviarMensaje(avenida,r2)
+        EnviarMensaje(calle,r2)
+        RecibirMensaje(seguir,r2)
+    EnviarMensaje(4,r1)
+    EnviarMensaje(4,r2)
+  fin
+  robot trabajador
+  variables
+    id,tarea,calle,avenida:numero
+  comenzar
+    RecibirMensaje(id,j)
+    RecibirMensaje(tarea,j)
+    mientras(tarea<>4)
+      RecibirMensaje(avenida,j)
+      RecibirMensaje(calle,j)
+      realizarTarea(tarea,avenida,calle)
+      EnviarMensaje(V,j)
+      RecibirMensaje(tarea,j)
+  fin
+variables
+  j:jefe
+  r1,r2:trabajador
+comenzar
+  AsignarArea(j,esqJ)
+  AsignarArea(r1,esq1)
+  AsignarArea(r2,esq2)
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r2,cuadrante)
+  Iniciar(j,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,3,1)
+fin

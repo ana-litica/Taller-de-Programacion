@@ -1,0 +1,138 @@
+programa Ej1
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso enviarIDs
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,a1)
+    EnviarMensaje(4,a2)
+  fin
+areas
+  area1:AreaP(2,1,2,97){r1}
+  area2:AreaP(3,1,3,97){r2}
+  area3:AreaP(4,98,100,98){a1}
+  area4:AreaP(4,99,100,99){a2}
+  area13:AreaPC(2,98,2,98){r1 y a1}
+  area23:AreaPC(3,98,3,98){r1 y a2}
+  area14:AreaPC(2,99,2,99){r2 y a1}
+  area24:AreaPC(3,99,3,99){r2 y a2}
+  area11:AreaP(2,100,2,100){r1}
+  area22:AreaP(3,100,3,100){r2}
+  area33:AreaP(1,98,1,98){a1}
+  area44:AreaP(1,99,1,99){a2}
+  areaF:AreaP(1,1,1,1){fiscal}
+robots
+  robot rojo
+  variables
+    f,id:numero
+  comenzar
+    RecibirMensaje(id,fiscal)
+    repetir 96
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+    BloquearEsquina(PosAv,98)
+    mover
+    juntarFlores(f)
+    BloquearEsquina(PosAv,99)
+    mover
+    LiberarEsquina(PosAv,98)
+    juntarFlores(f)
+    mover
+    LiberarEsquina(PosAv,99)
+    juntarFlores(f)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(f,fiscal)
+  fin
+  robot azul
+  variables
+    p,id:numero
+  comenzar
+    derecha
+    RecibirMensaje(id,fiscal)
+    juntarPapeles(p)
+    BloquearEsquina(2,PosCa)
+    mover
+    juntarPapeles(p)
+    BloquearEsquina(3,PosCa)
+    mover
+    LiberarEsquina(2,PosCa)
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(3,PosCa)
+    repetir 96
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+    EnviarMensaje(id,fiscal)
+    EnviarMensaje(p,fiscal)
+  fin
+  robot fiscalizador
+  variables
+    id,f,p,aux:numero
+  comenzar
+    enviarIDs
+    repetir 4
+      RecibirMensaje(id,*)
+      si(id=1)
+        RecibirMensaje(aux,r1)
+        f:=f+aux
+      sino
+        si(id=2)
+          RecibirMensaje(aux,r2)
+          f:=f+aux
+        sino
+          si(id=3)
+            RecibirMensaje(aux,a1)
+            p:=p+aux
+          sino
+            RecibirMensaje(aux,a2)
+            p:=p+aux
+    si(p>f)
+      Informar('Equipo_ganador_',2)
+    sino
+      si(p<f)
+        Informar('Equipo_ganador_',1)
+      sino
+        Informar('Empate',0)
+  fin
+variables
+  fiscal:fiscalizador
+  r1,r2:rojo
+  a1,a2:azul
+comenzar
+  AsignarArea(fiscal,areaF)
+  AsignarArea(r1,area1)
+  AsignarArea(r1,area11)
+  AsignarArea(r1,area13)
+  AsignarArea(r1,area14)
+  AsignarArea(r2,area2)
+  AsignarArea(r2,area22)
+  AsignarArea(r2,area23)
+  AsignarArea(r2,area24)
+  AsignarArea(a1,area3)
+  AsignarArea(a1,area33) 
+  AsignarArea(a1,area13)
+  AsignarArea(a1,area23)
+  AsignarArea(a2,area4)
+  AsignarArea(a2,area44)
+  AsignarArea(a2,area14)
+  AsignarArea(a2,area24)
+  Iniciar(fiscal,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,3,1)
+  Iniciar(a1,1,98)
+  Iniciar(a2,1,99)
+fin

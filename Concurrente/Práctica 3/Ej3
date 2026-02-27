@@ -1,0 +1,104 @@
+programa Ej3
+procesos
+  proceso enviarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso enviarEsquina(E av:numero;E ca:numero)
+  comenzar
+    EnviarMensaje(av,r1)
+    EnviarMensaje(ca,r1)
+    EnviarMensaje(av,r2)
+    EnviarMensaje(ca,r2)
+    EnviarMensaje(av,r3)
+    EnviarMensaje(ca,r3)
+    EnviarMensaje(av,r4)
+    EnviarMensaje(ca,r4)
+  fin
+  proceso recibirDatos(ES g:numero)
+  variables
+    id,f,max:numero
+  comenzar
+    max:=-1
+    repetir 4
+      RecibirMensaje(id,*)
+      si(id=1)
+        RecibirMensaje(f,r1)
+      sino
+        si(id=2)
+          RecibirMensaje(f,r2)
+        sino
+          si(id=3)
+            RecibirMensaje(f,r3)
+          sino
+            RecibirMensaje(f,r4)
+    si(f>max)
+      max:=f
+      g:=id
+  fin
+areas
+  cuadrante:AreaPC(2,2,10,10)
+  esqJ:AreaP(1,1,1,1)
+  esq1:AreaP(2,1,2,1)
+  esq2:AreaP(3,1,3,1)
+  esq3:AreaP(4,1,4,1)
+  esq4:AreaP(5,1,5,1)
+robots
+  robot recolector
+  variables
+    id,av,ca,f,avI,caI:numero
+    seguir:boolean
+  comenzar
+    f:=0
+    avI:=PosAv
+    caI:=PosCa
+    RecibirMensaje(id,j)
+    RecibirMensaje(av,j)
+    RecibirMensaje(ca,j)
+    seguir:=V
+    mientras(seguir)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      si(HayFlorEnLaEsquina)
+        tomarFlor
+        f:=f+1
+      sino
+        seguir:=F
+      Pos(avI,caI)
+      LiberarEsquina(av,ca)
+    EnviarMensaje(id,j)
+    EnviarMensaje(f,j) 
+  fin
+  robot jefe
+  variables
+    av,ca,ganador:numero
+  comenzar
+    enviarID
+    Random(av,2,10)
+    Random(ca,2,10)
+    enviarEsquina(av,ca)
+    recibirDatos(ganador)
+    Informar('Robot_que_recogio_mas_flores_',ganador)
+  fin
+variables
+  j:jefe
+  r1,r2,r3,r4:recolector
+comenzar
+  AsignarArea(j,esqJ)
+  AsignarArea(r1,esq1)
+  AsignarArea(r2,esq2)
+  AsignarArea(r3,esq3)
+  AsignarArea(r4,esq4)
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r2,cuadrante)
+  AsignarArea(r3,cuadrante)
+  AsignarArea(r4,cuadrante)
+  Iniciar(j,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,3,1)
+  Iniciar(r3,4,1)
+  Iniciar(r4,5,1)
+fin

@@ -1,0 +1,86 @@
+programa Ej2
+procesos
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso acomodar
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntar(ES f:numero;ES p:numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles(p)
+  fin
+  proceso contarMas(ES esc:numero;E f:numero; E p:numero)
+  comenzar
+    si(f>p)
+      esc:=esc+1
+  fin
+  proceso escalon(ES esc:numero)
+  variables
+    p,f,largo:numero
+  comenzar
+    p:=0
+    f:=0
+    Random(largo,1,5)
+    repetir largo-1
+      juntar(f,p)
+      mover
+    juntar(f,p)
+    derecha
+    mover
+    juntar(f,p)
+    contarMas(esc,f,p)
+  fin
+  proceso escalera(ES esc:numero)
+  comenzar
+    esc:=0
+    repetir 4
+      escalon(esc)
+      acomodar
+  fin
+areas
+  ciudad:AreaPC(2,1,100,100)
+  areaJ:AreaP(1,1,1,1)
+robots
+  robot recolector
+  variables
+    esc:numero
+  comenzar
+    escalera(esc)
+    EnviarMensaje(esc,j)
+  fin
+  robot jefe
+  variables
+    suma,cant:numero
+  comenzar
+    suma:=0
+    repetir 3
+      RecibirMensaje(cant,*)
+      suma:=suma+cant
+    Informar('EscalonesConMasFloresQuePapeles_',suma)
+  fin
+variables
+  r1,r2,r3:recolector
+  j:jefe
+comenzar
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(j,areaJ)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+  Iniciar(j,1,1)
+fin

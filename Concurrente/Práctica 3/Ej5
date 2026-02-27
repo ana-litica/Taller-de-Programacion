@@ -1,0 +1,115 @@
+programa Ej5
+procesos  
+  proceso avanzar(E av:numero;E ca:numero)
+  comenzar
+    tomarPapel
+    Pos(av,ca)
+    LiberarEsquina(11,11)
+    depositarPapel
+    mover
+  fin
+  proceso terminar(ES seguir:boolean;E av:numero;E ca:numero)
+  comenzar
+    Pos(av,ca)
+    LiberarEsquina(11,11)   
+  fin
+  proceso verificar(ES seguir:boolean; ES pasos: numero)
+  variables
+    avAct,caAct:numero
+  comenzar
+    avAct:= PosAv
+    caAct:= PosCa
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    si (HayPapelEnLaEsquina)
+      tomarPapel
+      Pos(avAct,caAct)
+      LiberarEsquina(11,11)
+      depositarPapel
+      mover
+      pasos:= pasos + 1
+    sino
+      Pos(avAct,caAct)
+      LiberarEsquina(11,11)
+      seguir:= F
+  fin
+  proceso enviarIDs
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso determinarGanador(ES max:numero;ES maxID:numero)
+  variables
+    id,calle:numero
+  comenzar
+    RecibirMensaje(id,*)
+    si(id=1)
+      RecibirMensaje(calle,r1)  
+    sino
+      si(id=2)
+        RecibirMensaje(calle,r2)
+      sino
+        si(id=3)
+          RecibirMensaje(calle,r3)
+        sino
+          RecibirMensaje(calle,r4)
+    si(max<calle)
+      max:=calle
+      maxID:=id
+  fin
+areas
+  fuente:AreaPC(11,11,11,11)
+  area1:AreaP(4,1,4,100)
+  area2:AreaP(6,1,6,100)
+  area3:AreaP(8,1,8,100)
+  area4:AreaP(10,1,10,100)
+  esqC:AreaP(1,1,1,1)
+robots
+  robot competidor
+  variables
+    seguir:boolean
+    id:numero
+    pasos: numero
+  comenzar
+    RecibirMensaje(id,c)
+    seguir:= V
+    pasos:= 0
+    mientras (seguir)
+      si (PosCa = 100)
+        seguir:=F
+      sino
+        verificar(seguir,pasos)
+    EnviarMensaje(id,c)
+    EnviarMensaje(pasos,c)
+  fin
+  robot coordinador
+  variables
+    max,ganador:numero
+  comenzar
+    max:=-1
+    enviarIDs
+    repetir 4
+      determinarGanador(max,ganador)
+    Informar(ganador)
+  fin
+variables
+  r1,r2,r3,r4:competidor
+  c:coordinador
+comenzar
+  AsignarArea(r1,fuente)
+  AsignarArea(r2,fuente)
+  AsignarArea(r3,fuente)
+  AsignarArea(r4,fuente)
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(c,esqC)
+  Iniciar(c,1,1)
+  Iniciar(r1,4,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,8,1)
+  Iniciar(r4,10,1)
+fin

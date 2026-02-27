@@ -1,0 +1,62 @@
+programa Ej3b
+procesos 
+  proceso juntarPapeles(ES p:numero;E cant:numero)
+  comenzar  
+    mientras((HayPapelEnLaEsquina)&(p<cant))
+      tomarPapel
+      p:=p+1
+  fin
+areas
+  av1:AreaP(1,1,1,100)
+  av2:AreaP(2,1,2,100)
+  av3:AreaP(3,1,3,100)
+  esqC:AreaP(4,1,4,1)
+robots
+  robot papelero
+  variables
+    id,cant,p:numero
+    seguir, continuar:boolean
+  comenzar
+    continuar := V
+    RecibirMensaje(id,c)
+    mientras(PosCa<100)
+      Random(cant,1,5)
+      juntarPapeles(p,cant)
+      mientras(PosCa<100)&(p<cant)
+        mover
+        juntarPapeles(p,cant)
+      si(p=cant)
+        p:=0
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(V,r3)
+        repetir 3
+          RecibirMensaje(seguir,*)
+    mientras(continuar)
+      continuar := F
+      EnviarMensaje(continuar, r1)
+      EnviarMensaje(continuar, r2)
+      EnviarMensaje(continuar, r3)
+      repetir 3
+        RecibirMensaje(seguir, *)
+        continuar := continuar | seguir
+  fin
+  robot coordinador
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+variables
+  r1,r2,r3:papelero
+  c:coordinador
+comenzar
+  AsignarArea(r1,av1)
+  AsignarArea(r2,av2)
+  AsignarArea(r3,av3)
+  AsignarArea(c,esqC)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+  Iniciar(c,4,1)
+fin

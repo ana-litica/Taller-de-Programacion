@@ -1,0 +1,90 @@
+programa Ej1
+procesos
+  proceso enviarIDs
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso juntarFlores(E cant:numero)
+  comenzar
+    repetir cant
+      tomarFlor
+  fin
+  proceso dejarFlores(E cant:numero; E av:numero; E ca:numero)
+  comenzar
+    Pos(av,ca)
+    repetir cant
+      depositarFlor
+    Pos(100,100)
+  fin
+areas
+  esqS:AreaP(100,100,100,100)
+  av1:AreaPC(1,1,1,100)
+  av2:AreaPC(2,1,2,100)
+  av3:AreaPC(3,1,3,100)
+robots
+  robot cliente
+  variables
+    id,cant,calleAct:numero
+    buscar:boolean
+  comenzar
+    RecibirMensaje(id,s)
+    mientras(PosCa<100)
+      Random(cant,1,4)
+      EnviarMensaje(id,s)
+      EnviarMensaje(cant,s)
+      calleAct:=PosCa+1
+      EnviarMensaje(calleAct,s)
+      RecibirMensaje(buscar,s)
+      mover
+      juntarFlores(cant)
+      Pos(PosAv,PosCa-1)
+      mientras((PosCa<100)&(HayFlorEnLaBolsa))
+        depositarFlor
+        mover
+    EnviarMensaje(0,s)
+  fin
+  robot servidor
+  variables
+    finalizado,id,ca,cant,sigo:numero
+  comenzar
+    enviarIDs
+    finalizado:=0
+    mientras(finalizado<3)
+      RecibirMensaje(id,*)
+      si(id=1)
+        RecibirMensaje(cant,r1)
+        RecibirMensaje(ca,r1)
+        dejarFlores(cant,1,ca)
+        EnviarMensaje(V,r1)
+      sino
+        si(id=2)        
+          RecibirMensaje(cant,r2)
+          RecibirMensaje(ca,r2)
+          dejarFlores(cant,2,ca)
+          EnviarMensaje(V,r2)
+        sino         
+          RecibirMensaje(cant,r3)
+          RecibirMensaje(ca,r3)
+          dejarFlores(cant,3,ca)
+          EnviarMensaje(V,r3)
+      si(id=0)
+        finalizado:=finalizado+1
+  fin
+variables
+  r1,r2,r3:cliente
+  s:servidor
+comenzar
+  AsignarArea(s,esqS)
+  AsignarArea(s,av1)
+  AsignarArea(s,av2)
+  AsignarArea(s,av3)
+  AsignarArea(r1,av1)
+  AsignarArea(r2,av2)
+  AsignarArea(r3,av3)
+  Iniciar(s,100,100)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+fin

@@ -1,0 +1,43 @@
+programa P1E1
+procesos 
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso verificar(ES f:numero;ES vacias:numero)
+  comenzar
+    si(HayFlorEnLaEsquina)
+      juntarFlores(f)
+    sino
+      vacias:=vacias+1
+  fin
+  proceso depositarFlores(E f:numero)
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+areas
+  av1:AreaP(1,1,1,100)
+robots
+  robot florero
+  variables
+    f,vacias:numero
+  comenzar  
+    f:=0
+    vacias:=0
+    repetir 99
+      verificar(f,vacias)
+      mover
+    verificar(f,vacias)
+    depositarFlores(f)
+    Informar('Flores_',f)
+    Informar('Esquinas_vacias',vacias)
+  fin
+variables
+  r:florero
+comenzar
+  AsignarArea(r,av1)
+  Iniciar(r,1,1)
+fin

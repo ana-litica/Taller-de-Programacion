@@ -1,0 +1,71 @@
+programa P1E3
+procesos
+  proceso contar(ES f:numero;ES p:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+    repetir f
+      depositarFlor
+    repetir p
+      depositarPapel
+  fin
+  proceso acomodar
+  comenzar
+    repetir 2
+      derecha
+  fin
+  proceso escalon(E pasos:numero;ES supero:boolean)
+  variables
+    p,f:numero
+  comenzar
+    p:=0
+    f:=0
+    repetir 2
+      repetir pasos
+        contar(f,p)
+        mover
+      contar(f,p)
+      derecha
+    acomodar
+    si(f+1=p)
+      supero:=V
+  fin
+  proceso escalera(ES s:numero)
+  variables
+    pasos,s:numero
+    supero:boolean
+  comenzar
+    pasos:=1
+    s:=0
+    repetir 4
+      supero:=F
+      escalon(pasos,supero)
+      pasos:=pasos+1
+      si(supero)
+        s:=s+1
+  fin
+areas
+  area:AreaC(12,6,100,100)
+robots
+  robot contador
+  variables
+    sup:numero
+  comenzar
+    sup:=0
+    escalera(sup)
+    Informar(sup)
+  fin
+variables
+  r1,r2,r3:contador
+comenzar
+  AsignarArea(r1,area)
+  AsignarArea(r2,area)
+  AsignarArea(r3,area)
+  Iniciar(r1,12,14)
+  Iniciar(r2,17,10)
+  Iniciar(r3,22,6)
+fin

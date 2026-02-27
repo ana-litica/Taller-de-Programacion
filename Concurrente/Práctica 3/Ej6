@@ -1,0 +1,217 @@
+programa Ej6
+procesos 
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso juntar(ES f:numero;ES p:numero)
+  comenzar
+    juntarFlores(f)
+    juntarPapeles(p)
+  fin
+  proceso ladoAF(ES f:numero)
+  comenzar
+    repetir 6
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+    derecha
+  fin
+  proceso ladoBF(ES f:numero)
+  variables
+    avenida,calle:numero
+  comenzar
+    repetir 2
+      mover
+      juntarFlores(f)
+    avenida:=PosAv+1
+    calle:=PosCa+1
+    BloquearEsquina(avenida,calle)
+    mover
+    juntarFlores(f)
+    mover
+    LiberarEsquina(avenida,calle)
+    repetir 2
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+    derecha
+  fin
+  proceso recorrerCalleF(ES f:numero)
+  comenzar
+    mientras((f>0)&(PosAv<100))
+      depositarFlor
+      f:=f-1
+      mover
+  fin
+  proceso ladoAP(ES p:numero)
+  comenzar
+    repetir 7
+      juntarPapeles(p)
+      mover
+    derecha
+  fin
+  proceso ladoBP1(ES p:numero)
+  variables
+    avenida,calle:numero
+  comenzar
+    repetir 5
+      juntarPapeles(p)
+      mover
+    juntarPapeles(p)
+    avenida:=PosAv+1
+    calle:=PosCa+1
+    BloquearEsquina(avenida,calle)
+    mover
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(avenida,calle)
+    derecha
+  fin
+  proceso ladoBP2(ES p:numero)
+  variables
+    calle,avenida:numero
+  comenzar
+    avenida:=PosAv+
+    calle:=PosCa+
+    BloquearEsquina(avenida,calle)
+    mover
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(avenida,calle)
+    repetir 5
+      juntarPapeles(p)
+      mover
+    derecha
+  fin
+  proceso recorrerCalleP(ES p:numero)
+  comenzar
+    mientras((p>0)&(PosAv<100))
+      depositarPapel
+      p:=p-1
+      mover      
+  fin
+  proceso otraEsquina(E pasos:numero;ES f:numero;ES p:numero)
+  comenzar
+    repetir pasos
+      juntar(f,p)
+      mover
+    juntar(f,p)
+  fin
+  proceso ladoFP(ES f:numero;ES p:numero;E pasos1:numero;E pasos2:numero)
+  variables
+    avenida,calle:numero
+  comenzar
+    otraEsquina(pasos1,f,p)
+    avenida:=PosAv+1
+    calle:=PosCa+1
+    BloquearEsquina(avenida,calle)
+    mover
+    juntar(f,p)
+    mover
+    LiberarEsquina(avenida,calle)
+    otraEsquina(pasos2,f,p)
+    derecha
+  fin
+  proceso recorrerCalleFP(ES f:numero;ES p:numero)
+  comenzar
+    mientras(((f>0)&(p>0))&(PosAv<100))
+      depositarFlor
+      depositarPapel
+      f:=f-1
+      p:=p-1
+      mover
+  fin
+areas
+  cuadrante:AreaPC(2,2,16,16)
+  area:AreaPC(1,20,100,22)
+  esqJ:AreaP(1,1,1,1)
+robots
+  robot robot1
+  variables
+    f,calle:numero
+  comenzar
+    f:=0
+    ladoAF(f)
+    repetir 2
+      ladoBF(f)
+    ladoAF(f)
+    derecha
+    EnviarMensaje(1,j)
+    RecibirMensaje(calle,j)
+    Pos(1,calle)
+    recorrerCalleF(f)
+  fin
+  robot robot2
+  variables
+    f,p,calle:numero
+  comenzar
+    f:=0
+    p:=0
+    ladoFP(f,p,2,6)
+    ladoFP(f,p,3,5)
+    ladoFP(f,p,5,3)
+    ladoFP(f,p,6,2)
+    derecha
+    EnviarMensaje(2,j)
+    RecibirMensaje(calle,j)
+    Pos(1,calle)
+    recorrerCalleFP(f,p)
+  fin
+  robot robot3
+  variables
+    calle,p:numero
+  comenzar
+    p:=0
+    ladoBP1(p)
+    repetir 2
+      ladoAP(p)
+    ladoBP2(p)
+    derecha
+    EnviarMensaje(3,j)
+    RecibirMensaje(calle,j)
+    Pos(1,calle)
+    recorrerCalleP(p)
+  fin
+  robot jefe
+  variables
+    id,calle:numero
+  comenzar
+    calle:=20
+    repetir 3
+      RecibirMensaje(id,*)
+      si(id=1)
+        EnviarMensaje(calle,r1)
+      sino
+        si(id=2)
+          EnviarMensaje(calle,r2)
+        sino
+          EnviarMensaje(calle,r3)
+      calle:=calle+1
+  fin
+variables
+  r1:robot1
+  r2:robot2
+  r3:robot3
+  j:jefe
+comenzar
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r1,area)
+  AsignarArea(r2,cuadrante)
+  AsignarArea(r2,area)
+  AsignarArea(r3,cuadrante)
+  AsignarArea(r3,area)
+  AsignarArea(j,esqJ)
+  Iniciar(r1,2,2)
+  Iniciar(r3,9,9)
+  Iniciar(r2,5,5)
+  Iniciar(j,1,1)
+fin

@@ -1,0 +1,90 @@
+programa E2
+procesos
+  proceso juntarFlores(ES aux:numero;ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      aux:=aux+1
+      f:=f+1
+  fin
+  proceso dejarFlores(E avenida:numero;E calle:numero;E f:numero)
+  comenzar
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir f
+      depositarFlor
+    Pos(avenida,calle)
+    LiberarEsquina(50,50)
+  fin
+areas
+  areaF:AreaP(1,4,1,4)
+  area1:AreaP(1,1,100,1)
+  area2:AreaP(1,2,100,2)
+  area3:AreaP(1,3,100,3)
+  area50:AreaC(50,50,50,50)
+robots
+  robot recolector
+  variables
+    aux,f:numero
+    seguir,finalizado:boolean
+  comenzar
+    derecha
+    aux:=0
+    repetir 9
+      f:=0
+      repetir 10
+        juntarFlores(aux,f)
+        mover
+      juntarFlores(aux,f)
+      dejarFlores(PosAv,PosCa,f)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      repetir 3
+        RecibirMensaje(seguir,*)
+    {Agregar ejecuciÃ³n acÃ¡}
+    repetir 9
+      juntarFlores(aux,f)
+      mover
+    juntarFlores(aux, f)
+    dejarFlores(PosAv,PosCa,f)
+    mientras(finalizado)
+      finalizado:=F
+      EnviarMensaje(finalizado,r1)
+      EnviarMensaje(finalizado,r2)
+      EnviarMensaje(finalizado,r3)
+      repetir 3
+        RecibirMensaje(seguir,*)
+        finalizado:=finalizado|seguir
+    EnviarMensaje(aux,fiscal)
+  fin
+  robot fiscalizador
+  variables
+    aux,f:numero
+  comenzar
+    f:=0
+    repetir 3
+      RecibirMensaje(aux,*)
+      f:=f+aux
+    Pos(50,50)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+    Informar(f)
+  fin
+variables
+  r1,r2,r3:recolector
+  fiscal:fiscalizador
+comenzar
+  AsignarArea(fiscal,areaF)
+  AsignarArea(fiscal,area50)
+  AsignarArea(r1,area1)
+  AsignarArea(r1,area50)
+  AsignarArea(r2,area2)
+  AsignarArea(r2,area50)
+  AsignarArea(r3,area3)
+  AsignarArea(r3,area50)
+  Iniciar(fiscal,1,4)
+  Iniciar(r1,1,1)
+  Iniciar(r2,1,2)
+  Iniciar(r3,1,3)
+fin

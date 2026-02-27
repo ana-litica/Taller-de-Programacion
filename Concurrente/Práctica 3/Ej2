@@ -1,0 +1,137 @@
+programa Ej2
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso acomodar(E mov:numero)
+  comenzar
+    repetir mov
+      derecha
+  fin
+  proceso lado(E long:numero)
+  comenzar
+    repetir long 
+      mover
+  fin
+  proceso escalonF(ES f:numero;E long:numero)
+  comenzar
+    lado(long)
+    derecha
+    juntarFlores(f)
+    lado(long)
+    acomodar(3)
+  fin
+  proceso escaleraF(ES f:numero)
+  variables
+    long,avenida,calle:numero
+    recibido:boolean
+  comenzar
+    long:=5
+    repetir 4
+      escalonF(f,long)
+      long:=long-1    
+    mover
+    juntarFlores(f)
+    derecha
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(1,j)
+    RecibirMensaje(recibido,j)
+    acomodar(2)
+    mover
+    LiberarEsquina(16,16)
+    long:=2
+    repetir 4
+      escalonF(f,long)
+      long:=long+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso escalonP(ES p:numero;E long:numero)
+  comenzar
+    lado(long)
+    acomodar(3)
+    juntarPapeles(p)
+    lado(long)
+    derecha
+  fin
+  proceso escaleraP(ES p:numero)
+  variables
+    long,avenida,calle:numero
+    recibido:boolean
+  comenzar
+    long:=5
+    repetir 4
+      escalonP(p,long)
+      long:=long-1    
+    mover
+    juntarPapeles(p)
+    acomodar(3)
+    BloquearEsquina(16,16)
+    mover
+    EnviarMensaje(2,j)
+    RecibirMensaje(recibido,j)
+    acomodar(2)
+    mover
+    LiberarEsquina(16,16)
+    long:=2
+    repetir 4
+      escalonP(p,long)
+      long:=long+1
+  fin
+areas
+  cuadrante:AreaC(1,1,31,30)
+robots
+  robot robot1
+  variables
+    f:numero
+  comenzar
+    f:=0
+    escaleraF(f)
+    Informar('Flores_recolectadas_',f)
+  fin
+  robot robot2
+  variables
+    p:numero
+  comenzar
+    p:=0
+    escaleraP(p)
+    Informar('Papeles_recolectados_',p)
+  fin
+  robot jefe
+  variables
+    id,primero:numero
+  comenzar
+    RecibirMensaje(id,*)
+    si(id=1)
+      primero:=1
+      EnviarMensaje(V,r1)
+      RecibirMensaje(id,r2)
+      EnviarMensaje(V,r2)
+    sino
+      si(id=2)
+        primero:=2
+        EnviarMensaje(V,r2)
+        RecibirMensaje(id,r1)
+        EnviarMensaje(V,r1)
+    Informar('Robot_que_llego_primero_',primero)
+  fin
+variables
+  r1:robot1
+  r2:robot2
+  j:jefe
+comenzar
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r2,cuadrante)
+  AsignarArea(j,cuadrante)
+  Iniciar(r1,1,1)
+  Iniciar(r2,31,1)
+  Iniciar(j,15,1)
+fin
